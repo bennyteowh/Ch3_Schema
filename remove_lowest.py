@@ -36,18 +36,29 @@ def findOne():
     
 def find():
     print "find reporting for duty"
-    
     query = {'name':'Gisela Levin'}
-    projection = {'scores':1} #limits data that is sent to the query ie. scores
+    #query = {'scores.type' : 'exam'}
+    #query = {'name':'Gisela Levin','scores': {'$elemMatch': {'type':'exam'}}}
+    #projection = {'score':1} #limits data that is sent to the query ie. scores
     
     try:
-        cursor = records.find(query,projection)
-                
+        #cursor = records.find(query,projection)
+        cursor = records.find(query)
     except Exception as e:
         print "Unexpected error:", type(e), e
-        
+    
+    lowest_score = 100
     for docu in cursor:
-        pprint.pprint(docu)
+        intermediate_score = docu['scores'][0]['score'] #needs work. its not always the first element is type exam!!
+        
+        #print "Intermediate_score: {}".format(intermediate_score)
+        if lowest_score < intermediate_score:
+            print "if loop"
+        else:
+            lowest_score = intermediate_score
+            print "else loop"
+                  
+    print "Lowest Score: {}".format(lowest_score)
 
 def student_names():
     ###########
