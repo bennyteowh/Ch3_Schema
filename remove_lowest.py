@@ -28,6 +28,8 @@ def findOne():
     try: 
         doc = records.find_one(query)
         print doc
+        #studentname = doc["name"]
+        #print studentname
         
     except Exception as e:
         print "Unexpected error:", type(e), e
@@ -45,9 +47,36 @@ def find():
         print "Unexpected error:", type(e), e
         
     for docu in cursor:
-        print docu
+        pprint.pprint(docu)
+
+def student_names():
+    ###########
+    #Pulls the unique student names and returns it in an array
+    ###########
     
+    print "student_names reporting"
+    query = {}
+    projection = {'name': 1}
+    
+    try:
+        cursor = records.find(query,projection)
+    
+    except Exception as e:
+        print "Unexpected error:", type(e), e
+    name_array = []
+    for names in cursor.distinct("name"): #gets the unique occurences of each name distinct() is a method in pymongo.collections
+        #print type(names)
+        names = names.encode("utf-8") #converts the unicode to python str
+        name_array.append(names)      
+    
+    
+    return name_array
+
+#def pull_score(name_array):
+    #pulls the score with type exam
+    
+
 #pprint.pprint(findOne())
 pprint.pprint(find())
-    
+#pprint.pprint(student_names())    
     
