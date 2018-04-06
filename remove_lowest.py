@@ -35,10 +35,13 @@ def findOne():
         print "Unexpected error:", type(e), e
     
 def find():
+    #####################
+    #finds the lowest score for the student
+    ####################
+    
+    ##find all documents related to the person##
     print "find reporting for duty"
-    query = {'name':'Gisela Levin'}
-    #query = {'scores.type' : 'exam'}
-    #query = {'name':'Gisela Levin','scores': {'$elemMatch': {'type':'exam'}}}
+    query = {'name':'Tressa Schwing'}
     #projection = {'score':1} #limits data that is sent to the query ie. scores
     
     try:
@@ -46,20 +49,27 @@ def find():
         cursor = records.find(query)
     except Exception as e:
         print "Unexpected error:", type(e), e
-    
-    lowest_score = 100
+    ##compare and find the _id of the document with the lowest score##
+    lowest_score = 100 
     for docu in cursor:
+        
         intermediate_score = docu['scores'][0]['score'] #needs work. its not always the first element is type exam!!
         
         #print "Intermediate_score: {}".format(intermediate_score)
-        if lowest_score < intermediate_score:
-            print "if loop"
+        if lowest_score < intermediate_score:           #potential to crash since first instance (lowest_score =100) does not have record id
+            print "if loop. Record id: {}".format(record_id)
+            
         else:
             lowest_score = intermediate_score
-            print "else loop"
+            record_id = docu['_id']    #records the record_id for the lowest score
+            print "else loop. Record id: {}".format(record_id)
                   
-    print "Lowest Score: {}".format(lowest_score)
-
+    print "Lowest Score: {}\nRecord Id:{}".format(lowest_score,record_id)
+    ##Update_one to remove only the exam score of the identified _id
+    result = records.update_one({'_id':record_id},{'$set':{'scores.'}})
+    
+        
+        
 def student_names():
     ###########
     #Pulls the unique student names and returns it in an array
@@ -82,11 +92,19 @@ def student_names():
     
     
     return name_array
-
-#def pull_score(name_array):
-    #pulls the score with type exam
+'''
+def remove_score(s_id):
+    ###remove only the lowest EXAM score!
+    query = {}
+    projection ={}
     
-
+    try:
+        result = update_one(query,projection)
+        print "num removed:", result.deleted_count
+        
+    except Exception as e:
+        print "Unexpected error:", type(e), e
+'''
 #pprint.pprint(findOne())
 pprint.pprint(find())
 #pprint.pprint(student_names())    
