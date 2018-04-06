@@ -51,6 +51,7 @@ def find():
         print "Unexpected error:", type(e), e
     ##compare and find the _id of the document with the lowest score##
     lowest_score = 100 
+    
     for docu in cursor:
         
         intermediate_score = docu['scores'][0]['score'] #needs work. its not always the first element is type exam!!
@@ -66,7 +67,10 @@ def find():
                   
     print "Lowest Score: {}\nRecord Id:{}".format(lowest_score,record_id)
     ##Update_one to remove only the exam score of the identified _id
-    result = records.update_one({'_id':record_id},{'$set':{'scores.'}})
+    result = records.update_one({'_id':record_id},{'$unset':{'scores.0.score': ''}})
+    
+    pprint.pprint(records.find_one({'_id':record_id})) #prints the score for review. 
+    
     
         
         
@@ -92,19 +96,7 @@ def student_names():
     
     
     return name_array
-'''
-def remove_score(s_id):
-    ###remove only the lowest EXAM score!
-    query = {}
-    projection ={}
-    
-    try:
-        result = update_one(query,projection)
-        print "num removed:", result.deleted_count
-        
-    except Exception as e:
-        print "Unexpected error:", type(e), e
-'''
+
 #pprint.pprint(findOne())
 pprint.pprint(find())
 #pprint.pprint(student_names())    
