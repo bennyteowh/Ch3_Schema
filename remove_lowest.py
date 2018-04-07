@@ -3,6 +3,8 @@
 Created on Thu Apr 05 13:34:21 2018
 
 @author: WTeo2
+
+Pending iteration for all names!
 """
 
 from pymongo import MongoClient
@@ -16,11 +18,6 @@ records = db.students
 
 ### for printing all the records in the collection 
 '''
-for record in records.find():
-    print records.find_one()
-
-    
-'''
 def findOne():
     print "findOne, reporting for duty"
     query = {'name':'Gisela Levin'} #
@@ -33,15 +30,15 @@ def findOne():
         
     except Exception as e:
         print "Unexpected error:", type(e), e
-    
-def find():
+'''    
+def find(student):
     #####################
     #finds the lowest score for the student
     ####################
     
-    ##find all documents related to the person##
+    #######find all documents related to the person######
     print "find reporting for duty"
-    query = {'name':'Tressa Schwing'}
+    query = {'name':student}
     #projection = {'score':1} #limits data that is sent to the query ie. scores
     
     try:
@@ -49,13 +46,16 @@ def find():
         cursor = records.find(query)
     except Exception as e:
         print "Unexpected error:", type(e), e
-    ##compare and find the _id of the document with the lowest score##
-    lowest_score = 100 
+    ######compare and find the _id of the lowest homework score in the array###
     
+    ######compare and find the _id of the document with the lowest score#######
+    lowest_score = 100 
+    print "Checking Student: {}".format(student)
     for docu in cursor:
-        
-        intermediate_score = docu['scores'][0]['score'] #needs work. its not always the first element is type exam!!
-        
+        print "findscore for loop running"
+        ######compare and find the _id of the lowest homework score in the array###
+        intermediate_score = docu['scores'][0]['score'] #needs work. its not always the first element is type exam!! maybe its ok.
+        record_id = docu
         #print "Intermediate_score: {}".format(intermediate_score)
         if lowest_score < intermediate_score:           #potential to crash since first instance (lowest_score =100) does not have record id
             print "if loop. Record id: {}".format(record_id)
@@ -98,6 +98,15 @@ def student_names():
     return name_array
 
 #pprint.pprint(findOne())
-pprint.pprint(find())
+#pprint.pprint(find())
 #pprint.pprint(student_names())    
+student_list = (student_names())
+#print "Student list: {}".format(student_list)
+print "Number of students: {}".format(len(student_list))
+
+for idx, student in enumerate(student_list):
+    print "{} student for loop running".format(idx)  
+    find(student)
     
+print ("EOL")
+
